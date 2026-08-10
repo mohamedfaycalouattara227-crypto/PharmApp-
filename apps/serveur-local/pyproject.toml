@@ -1,0 +1,48 @@
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+extend-exclude = "migrations"
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip = ["migrations", ".venv"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["migrations", ".venv", "staticfiles"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "C4", "UP", "S", "DJ", "RET", "SIM", "PIE"]
+ignore = ["E501", "B008", "S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]
+"conftest.py" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+exclude = ["migrations", ".venv"]
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations", ".venv"]
+skips = ["B101"]
+
+[tool.pytest.ini_options]
+# DJANGO_SETTINGS_MODULE retiré : conftest.py utilise settings.configure() programmatique
+# (SQLite en mémoire) — activer ce paramètre chargerait pharmapp.settings (PostgreSQL)
+# et ferait échouer tous les tests sans DATABASE_URL.
+python_files = ["test_*.py"]
+addopts = "--strict-markers --tb=short"
+markers = [
+    "unitaire: tests unitaires sans base de données",
+    "integration: tests d'intégration avec base de données",
+    "securite: tests de sécurité et contrôle d'accès",
+    "lent: tests lents (inventaires, rapports)",
+    "conformite: tests de conformite reglementaire",
+]

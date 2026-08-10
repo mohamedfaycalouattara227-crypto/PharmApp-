@@ -1,0 +1,131 @@
+# infra/docker-compose.yml — Stack complète PharmApp (développement / recette)
+#
+# Une seule commande depuis la racine du dépôt : `make demarrer`
+# Services : PostgreSQL, Redis, serveur local (API), worker Celery, Celery beat,
+# poste client (Vite). Le cloud est optionnel (profil `cloud`).
+
+name: pharmapp
+
+x-env-serveur: &env-serveur
+  DATABASE_URL: postgres://pharmapp:${POSTGRES_PASSWORD:-pharmapp}@db:5432/pharmapp
+  REDIS_URL: redis://redis:6379/0
+  PHARMAPP_VERSION: ${PHARMAPP_VERSION:-}
+  PHARMAPP_COMMIT: ${PHARMAPP_COMMIT:-}
+  PHARMAPP_BUILD_DATE: ${PHARMAPP_BUILD_DATE:-}
+  DJANGO_SETTINGS_MODULE: pharmapp.settings
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pharmapp
+      POSTGRES_USER: pharmapp
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pharmapp}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pharmapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  serveur-local:
+    build:
+      context: ..
+      dockerfile: apps/serveur-local/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      <<: *env-serveur
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports:
+      - "8000:8000"
+    volumes:
+      - media:/app/media
+      - logs:/app/logs
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/v1/version/').status==200 else 1)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  worker:
+    build:
+      context: ..
+      dockerfile: apps/serveur-local/Dockerfile
+    restart: unless-stopped
+    command: ["celery", "-A", "pharmapp", "worker", "-l", "info"]
+    env_file:
+      - ../.env
+    environment:
+      <<: *env-serveur
+    depends_on:
+      serveur-local: { condition: service_started }
+      redis: { condition: service_healthy }
+
+  beat:
+    build:
+      context: ..
+      dockerfile: apps/serveur-local/Dockerfile
+    restart: unless-stopped
+    command: ["celery", "-A", "pharmapp", "beat", "-l", "info"]
+    env_file:
+      - ../.env
+    environment:
+      <<: *env-serveur
+    depends_on:
+      serveur-local: { condition: service_started }
+      redis: { condition: service_healthy }
+
+  poste-client:
+    build:
+      context: ..
+      dockerfile: infra/poste-client.Dockerfile
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+      PORT: "3000"
+    depends_on:
+      serveur-local: { condition: service_started }
+    ports:
+      - "3000:3000"
+
+  cloud:
+    profiles: ["cloud"]
+    build:
+      context: ..
+      dockerfile: apps/cloud/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      DATABASE_URL: postgres://pharmapp:${POSTGRES_PASSWORD:-pharmapp}@db:5432/pharmapp_cloud
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      db: { condition: service_healthy }
+    ports:
+      - "8001:8000"
+
+volumes:
+  pgdata:
+  redisdata:
+  media:
+  logs:

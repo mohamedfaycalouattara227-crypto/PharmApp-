@@ -1,0 +1,21 @@
+# ─── PharmApp Cloud — Dépendances de production ───────────────────────────────
+# Python 3.12+
+# Générer le lock : pip-compile requirements.in
+
+# ── Framework ─────────────────────────────────────────────────────────────────
+Django==5.2.16
+djangorestframework==3.15.2
+
+# ── Base de données ───────────────────────────────────────────────────────────
+psycopg[binary]==3.2.3
+dj-database-url==2.3.0
+
+# ── Sécurité ──────────────────────────────────────────────────────────────────
+argon2-cffi==23.1.0            # Argon2id pour les mots de passe admin (Phase 4)
+
+# ── Serveur de production ─────────────────────────────────────────────────────
+gunicorn==23.0.0
+whitenoise[brotli]==6.8.2
+
+# ── Monitoring ────────────────────────────────────────────────────────────────
+sentry-sdk[django]==2.19.2

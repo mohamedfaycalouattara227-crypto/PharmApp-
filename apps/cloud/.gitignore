@@ -1,0 +1,38 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environnements
+.env
+.venv
+venv/
+env/
+
+# Django
+*.sqlite3
+staticfiles/
+media/
+db.sqlite3
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tests & couverture
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Docker
+*.log

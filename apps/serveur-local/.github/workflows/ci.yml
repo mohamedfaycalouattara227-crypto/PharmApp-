@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualite:
+    name: Lint + tests + sécurité
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_ENV: test
+      SECRET_KEY: ci-secret-key-suffisamment-longue-pour-passer-la-validation-locale-pharmapp
+      ORDONNANCE_ENCRYPTION_KEY: dev-key-32-bytes-non-prod-pharmapp
+      DATABASE_URL: ""
+      REDIS_URL: ""
+      CELERY_ALWAYS_EAGER: "True"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+          pip install bandit pip-audit ruff
+
+      - name: Lint (ruff / flake8)
+        run: |
+          ruff check .
+          flake8 .
+
+      # ─── Vérification déploiement Django ─────────────────────────────────
+      # On rejoue `check --deploy` dans une configuration *production-like*
+      # afin que les avertissements réels (SECRET_KEY faible, DEBUG, HSTS…)
+      # échouent la CI. Aucune protection n'est masquée par `|| true`.
+      - name: Vérifs déploiement Django (mode production-like)
+        env:
+          DJANGO_ENV: production
+          DEBUG: "False"
+          SECRET_KEY: ci-production-like-secret-key-suffisamment-longue-50chars-pharmapp-ci
+          ALLOWED_HOSTS: pharmapp.example.test
+          CSRF_TRUSTED_ORIGINS: https://pharmapp.example.test
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+          ORDONNANCE_ENCRYPTION_KEY: ci-ordonnance-encryption-key-32b-pharmapp-ci
+          SECURE_SSL_REDIRECT: "True"
+        run: python manage.py check --deploy --fail-level WARNING
+
+      - name: Tests + couverture
+        run: pytest --cov=. --cov-report=xml --cov-fail-under=85
+
+      - name: Bandit (analyse statique sécurité)
+        run: bandit -q -r gestion infrastructure api pharmapp -x tests
+
+      # ─── pip-audit STRICT ────────────────────────────────────────────────
+      # Toute vulnérabilité connue dans une dépendance échoue la CI.
+      # Ne surtout pas remettre `|| true` : ce serait masquer les failles.
+      - name: pip-audit (dépendances)
+        run: pip-audit --strict
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage.xml
+
+  docker:
+    name: Build image Docker
+    runs-on: ubuntu-latest
+    needs: qualite
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build (sans push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: pharmapp:ci

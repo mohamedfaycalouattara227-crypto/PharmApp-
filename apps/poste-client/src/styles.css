@@ -1,0 +1,404 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * PharmApp — Design System
+ * ------------------------
+ * Direction visuelle : « pharmacie de garde à 3h du matin ».
+ * — Fond encre nuit (bleu-vert profond, jamais purple).
+ * — Vert apaisant (menthol, croix de pharmacie) pour actions positives.
+ * — Ambre chaud pour flux monétaires / caisse.
+ * — Rouge sang pour alertes, rupture, annulation.
+ * — Typographie : Instrument Serif pour titres éditoriaux, Inter Tight pour l'UI dense.
+ */
+
+@theme inline {
+  --font-sans: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-surface-strong: var(--surface-strong);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-money: var(--money);
+  --color-money-foreground: var(--money-foreground);
+  --color-money-soft: var(--money-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  --shadow-elevated: 0 1px 0 0 color-mix(in oklab, var(--foreground) 6%, transparent),
+                     0 24px 48px -24px color-mix(in oklab, var(--foreground) 18%, transparent);
+  --shadow-inset-card: inset 0 1px 0 0 color-mix(in oklab, var(--surface-strong) 60%, transparent);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Base — encre nuit très légèrement teintée vert */
+  --background:           oklch(0.198 0.024 200);
+  --foreground:           oklch(0.972 0.010 200);
+  --surface:              oklch(0.230 0.024 200);
+  --surface-foreground:   oklch(0.972 0.010 200);
+  --surface-strong:       oklch(0.275 0.028 200);
+
+  --card:                 oklch(0.235 0.024 200);
+  --card-foreground:      oklch(0.972 0.010 200);
+  --popover:              oklch(0.240 0.026 200);
+  --popover-foreground:   oklch(0.972 0.010 200);
+
+  --muted:                oklch(0.290 0.020 200);
+  --muted-foreground:     oklch(0.720 0.020 200);
+  --border:               oklch(0.335 0.024 200);
+  --border-strong:        oklch(0.430 0.030 200);
+  --input:                oklch(0.320 0.024 200);
+  --ring:                 oklch(0.760 0.140 170);
+
+  /* Primary — vert croix de pharmacie */
+  --primary:              oklch(0.760 0.140 170);
+  --primary-foreground:   oklch(0.150 0.020 200);
+  --primary-soft:         oklch(0.380 0.070 170);
+
+  --secondary:            oklch(0.310 0.024 200);
+  --secondary-foreground: oklch(0.972 0.010 200);
+  --accent:               oklch(0.320 0.040 200);
+  --accent-foreground:    oklch(0.972 0.010 200);
+
+  /* Money — ambre chaud pour caisse & totaux */
+  --money:                oklch(0.820 0.140 75);
+  --money-foreground:     oklch(0.180 0.030 60);
+  --money-soft:           oklch(0.360 0.070 70);
+
+  --destructive:          oklch(0.660 0.200 22);
+  --destructive-foreground: oklch(0.980 0.010 22);
+  --destructive-soft:     oklch(0.340 0.100 22);
+
+  --success:              oklch(0.770 0.150 155);
+  --success-foreground:   oklch(0.160 0.030 155);
+  --warning:              oklch(0.820 0.150 85);
+  --warning-foreground:   oklch(0.180 0.030 85);
+  --info:                 oklch(0.760 0.110 220);
+  --info-foreground:      oklch(0.160 0.030 220);
+}
+
+.light {
+  --background:           oklch(0.985 0.005 200);
+  --foreground:           oklch(0.180 0.020 200);
+  --surface:              oklch(1 0 0);
+  --surface-strong:       oklch(0.965 0.010 200);
+  --card:                 oklch(1 0 0);
+  --card-foreground:      oklch(0.180 0.020 200);
+  --muted:                oklch(0.955 0.008 200);
+  --muted-foreground:     oklch(0.450 0.020 200);
+  --border:               oklch(0.900 0.012 200);
+  --border-strong:        oklch(0.820 0.020 200);
+  --primary:              oklch(0.500 0.120 170);
+  --primary-foreground:   oklch(0.985 0.010 170);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { height: 100%; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-primary) 40%, transparent);
+    color: var(--color-primary-foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Utilitaires réutilisables ─────────────────────────────────────────── */
+
+@utility numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum", "cv11";
+}
+
+@utility card-elevated {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+}
+
+@utility kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.375rem;
+  border: 1px solid var(--color-border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-strong);
+  color: var(--color-muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+/* ── Reçu imprimable — 58 mm & 80 mm ───────────────────────────────────── */
+
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+  body * { visibility: hidden !important; }
+  #zone-impression, #zone-impression * { visibility: visible !important; }
+  #zone-impression {
+    position: absolute;
+    left: 0; top: 0;
+    width: 80mm;
+    background: white;
+    color: black;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+  }
+  .recu-58mm { width: 58mm !important; }
+  .no-print { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   6 THÈMES UI — Variables CSS par thème
+   Chaque thème surcharge uniquement ce qui diffère du thème Vert Santé.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Thème 1 : Vert Santé (thème original — déjà défini dans :root) ─── */
+.theme-vert-sante {
+  /* Identique au :root — aucune surcharge nécessaire */
+}
+
+/* ── Thème 2 : Classique Bleu ──────────────────────────────────────── */
+.theme-classique-bleu {
+  --background:           oklch(0.195 0.025 230);
+  --foreground:           oklch(0.972 0.010 230);
+  --surface:              oklch(0.228 0.025 230);
+  --surface-foreground:   oklch(0.972 0.010 230);
+  --surface-strong:       oklch(0.270 0.030 230);
+  --card:                 oklch(0.232 0.025 230);
+  --card-foreground:      oklch(0.972 0.010 230);
+  --popover:              oklch(0.238 0.028 230);
+  --popover-foreground:   oklch(0.972 0.010 230);
+  --muted:                oklch(0.285 0.022 230);
+  --muted-foreground:     oklch(0.715 0.020 230);
+  --border:               oklch(0.330 0.025 230);
+  --border-strong:        oklch(0.425 0.032 230);
+  --input:                oklch(0.318 0.025 230);
+  --ring:                 oklch(0.650 0.150 240);
+  --primary:              oklch(0.650 0.150 240);
+  --primary-foreground:   oklch(0.985 0.008 240);
+  --primary-soft:         oklch(0.360 0.075 240);
+  --secondary:            oklch(0.308 0.025 230);
+  --secondary-foreground: oklch(0.972 0.010 230);
+  --accent:               oklch(0.318 0.042 230);
+  --accent-foreground:    oklch(0.972 0.010 230);
+  --money:                oklch(0.800 0.120 200);
+  --money-foreground:     oklch(0.175 0.025 200);
+  --money-soft:           oklch(0.355 0.065 200);
+}
+
+/* ── Thème 3 : Sombre Moderne ─────────────────────────────────────── */
+.theme-sombre-moderne {
+  --background:           oklch(0.140 0.012 210);
+  --foreground:           oklch(0.960 0.008 210);
+  --surface:              oklch(0.175 0.014 210);
+  --surface-foreground:   oklch(0.960 0.008 210);
+  --surface-strong:       oklch(0.215 0.016 210);
+  --card:                 oklch(0.180 0.014 210);
+  --card-foreground:      oklch(0.960 0.008 210);
+  --popover:              oklch(0.185 0.016 210);
+  --popover-foreground:   oklch(0.960 0.008 210);
+  --muted:                oklch(0.228 0.014 210);
+  --muted-foreground:     oklch(0.680 0.016 210);
+  --border:               oklch(0.278 0.018 210);
+  --border-strong:        oklch(0.370 0.022 210);
+  --input:                oklch(0.265 0.018 210);
+  --ring:                 oklch(0.780 0.160 195);
+  --primary:              oklch(0.780 0.160 195);
+  --primary-foreground:   oklch(0.130 0.015 210);
+  --primary-soft:         oklch(0.340 0.080 195);
+  --secondary:            oklch(0.255 0.018 210);
+  --secondary-foreground: oklch(0.960 0.008 210);
+  --accent:               oklch(0.265 0.032 210);
+  --accent-foreground:    oklch(0.960 0.008 210);
+  --money:                oklch(0.720 0.180 185);
+  --money-foreground:     oklch(0.145 0.018 185);
+  --money-soft:           oklch(0.320 0.088 185);
+}
+
+/* ── Thème 4 : Violet Élégant ─────────────────────────────────────── */
+.theme-violet-elegant {
+  --background:           oklch(0.185 0.030 295);
+  --foreground:           oklch(0.970 0.010 295);
+  --surface:              oklch(0.218 0.032 295);
+  --surface-foreground:   oklch(0.970 0.010 295);
+  --surface-strong:       oklch(0.260 0.036 295);
+  --card:                 oklch(0.222 0.032 295);
+  --card-foreground:      oklch(0.970 0.010 295);
+  --popover:              oklch(0.228 0.034 295);
+  --popover-foreground:   oklch(0.970 0.010 295);
+  --muted:                oklch(0.275 0.028 295);
+  --muted-foreground:     oklch(0.710 0.022 295);
+  --border:               oklch(0.320 0.032 295);
+  --border-strong:        oklch(0.415 0.040 295);
+  --input:                oklch(0.308 0.032 295);
+  --ring:                 oklch(0.700 0.200 300);
+  --primary:              oklch(0.700 0.200 300);
+  --primary-foreground:   oklch(0.980 0.010 300);
+  --primary-soft:         oklch(0.355 0.100 300);
+  --secondary:            oklch(0.298 0.028 295);
+  --secondary-foreground: oklch(0.970 0.010 295);
+  --accent:               oklch(0.308 0.045 295);
+  --accent-foreground:    oklch(0.970 0.010 295);
+  --money:                oklch(0.750 0.150 280);
+  --money-foreground:     oklch(0.170 0.025 280);
+  --money-soft:           oklch(0.348 0.075 280);
+}
+
+/* ── Thème 5 : Orange Dynamique (mode clair) ──────────────────────── */
+.theme-orange-dynamique {
+  --background:           oklch(0.985 0.008 70);
+  --foreground:           oklch(0.195 0.025 55);
+  --surface:              oklch(1 0 0);
+  --surface-foreground:   oklch(0.195 0.025 55);
+  --surface-strong:       oklch(0.965 0.012 70);
+  --card:                 oklch(1 0 0);
+  --card-foreground:      oklch(0.195 0.025 55);
+  --popover:              oklch(1 0 0);
+  --popover-foreground:   oklch(0.195 0.025 55);
+  --muted:                oklch(0.955 0.010 70);
+  --muted-foreground:     oklch(0.460 0.025 55);
+  --border:               oklch(0.895 0.015 70);
+  --border-strong:        oklch(0.815 0.022 55);
+  --input:                oklch(0.905 0.012 70);
+  --ring:                 oklch(0.650 0.200 55);
+  --primary:              oklch(0.650 0.200 55);
+  --primary-foreground:   oklch(0.990 0.005 55);
+  --primary-soft:         oklch(0.920 0.100 60);
+  --secondary:            oklch(0.945 0.010 70);
+  --secondary-foreground: oklch(0.195 0.025 55);
+  --accent:               oklch(0.945 0.018 70);
+  --accent-foreground:    oklch(0.195 0.025 55);
+  --money:                oklch(0.720 0.180 65);
+  --money-foreground:     oklch(0.985 0.005 65);
+  --money-soft:           oklch(0.918 0.090 65);
+  --destructive:          oklch(0.600 0.200 22);
+  --destructive-foreground: oklch(0.990 0.005 22);
+  --success:              oklch(0.520 0.140 155);
+  --success-foreground:   oklch(0.990 0.005 155);
+}
+
+/* ── Thème 6 : Minimaliste Blanc (mode clair) ─────────────────────── */
+.theme-minimaliste-blanc {
+  --background:           oklch(0.995 0.002 260);
+  --foreground:           oklch(0.175 0.015 260);
+  --surface:              oklch(1 0 0);
+  --surface-foreground:   oklch(0.175 0.015 260);
+  --surface-strong:       oklch(0.972 0.006 260);
+  --card:                 oklch(1 0 0);
+  --card-foreground:      oklch(0.175 0.015 260);
+  --popover:              oklch(1 0 0);
+  --popover-foreground:   oklch(0.175 0.015 260);
+  --muted:                oklch(0.965 0.005 260);
+  --muted-foreground:     oklch(0.445 0.015 260);
+  --border:               oklch(0.910 0.008 260);
+  --border-strong:        oklch(0.830 0.015 260);
+  --input:                oklch(0.920 0.006 260);
+  --ring:                 oklch(0.500 0.180 260);
+  --primary:              oklch(0.500 0.180 260);
+  --primary-foreground:   oklch(0.995 0.002 260);
+  --primary-soft:         oklch(0.920 0.090 260);
+  --secondary:            oklch(0.958 0.005 260);
+  --secondary-foreground: oklch(0.175 0.015 260);
+  --accent:               oklch(0.958 0.010 260);
+  --accent-foreground:    oklch(0.175 0.015 260);
+  --money:                oklch(0.600 0.140 250);
+  --money-foreground:     oklch(0.995 0.002 250);
+  --money-soft:           oklch(0.918 0.070 255);
+  --destructive:          oklch(0.580 0.185 22);
+  --destructive-foreground: oklch(0.995 0.002 22);
+  --success:              oklch(0.500 0.130 155);
+  --success-foreground:   oklch(0.995 0.002 155);
+}
+
+/* ── Animations de transition de thème ────────────────────────────── */
+.anim-fadeIn {
+  animation: theme-fadeIn 0.4s ease forwards;
+}
+.anim-glissement {
+  animation: theme-slide 0.35s ease forwards;
+}
+.anim-pulse-douce {
+  animation: theme-pulse 0.5s ease forwards;
+}
+.anim-rebond {
+  animation: theme-rebond 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes theme-fadeIn {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+@keyframes theme-slide {
+  from { transform: translateY(-4px); opacity: 0.8; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes theme-pulse {
+  0%   { opacity: 0.75; }
+  50%  { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+@keyframes theme-rebond {
+  from { transform: scale(0.98); opacity: 0.8; }
+  to   { transform: scale(1); opacity: 1; }
+}

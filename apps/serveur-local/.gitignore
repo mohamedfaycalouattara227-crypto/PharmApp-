@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.installed.cfg
+*.egg
+build/
+dist/
+
+# Environnements virtuels
+.venv/
+venv/
+env/
+ENV/
+
+# Django
+*.log
+*.sqlite3
+*.sqlite3-journal
+db_pharmapp.sqlite3
+db.sqlite3
+media/
+staticfiles/
+staticfiles-collect/
+
+# Environnement / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Tests & couverture
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+rapports/couverture/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/*.log
+logs/*.log.*
+
+# Docker
+.docker/
+docker-compose.override.yml

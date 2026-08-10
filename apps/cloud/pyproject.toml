@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "pharmapp-cloud"
+version = "1.0.0-phase1"
+description = "PharmApp Cloud — Plateforme de synchronisation multi-pharmacies"
+requires-python = ">=3.12"
+
+# ─── pytest ───────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+# NE PAS définir DJANGO_SETTINGS_MODULE ici — conftest.py configure Django
+# programmatiquement pour garantir l'isolation des tests.
+python_files  = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+    "unitaire: tests unitaires purs (sans base de données)",
+    "securite: tests de sécurité et de contrôle d'accès",
+    "integration: tests d'intégration nécessitant la base de données",
+]
+
+# ─── Black ────────────────────────────────────────────────────────────────────
+[tool.black]
+line-length    = 100
+target-version = ["py312"]
+
+# ─── Ruff ─────────────────────────────────────────────────────────────────────
+[tool.ruff]
+line-length    = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "S", "B"]
+ignore = [
+    "S101",  # assert utilisé dans les tests
+    "S106",  # secrets en dur dans les tests (fixtures)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "N"]
+
+# ─── Mypy ─────────────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version         = "3.12"
+strict                 = true
+plugins                = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false

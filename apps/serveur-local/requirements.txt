@@ -1,0 +1,36 @@
+# ─── Framework ────────────────────────────────────────────────────────────────
+Django==5.2.16
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.5.1
+django-cors-headers==4.4.0
+django-filter==24.3
+django-environ==0.11.2
+dj-database-url==2.2.0
+
+# ─── Base de données ──────────────────────────────────────────────────────────
+psycopg[binary]==3.2.13
+
+# ─── Cache / Files d'attente ─────────────────────────────────────────────────
+redis==5.0.7
+celery[redis]==5.4.0
+django-redis==5.4.0
+django-celery-beat==2.9.0
+
+# ─── Sécurité ─────────────────────────────────────────────────────────────────
+# NB : les protections anti-brute-force et CSP sont implémentées en interne :
+#   - anti-brute-force  → gestion.authentification.backend.BackendPharmApp
+#                         + api.throttling.ThrottleConnexion
+#   - Content-Security-Policy → api.middleware.SecurityHeadersMiddleware
+# django-axes et django-csp ne sont donc PAS ajoutés : ce serait une
+# dépendance non câblée qui donnerait une fausse impression de protection.
+argon2-cffi==23.1.0            # hachage de mot de passe recommandé OWASP
+cryptography==50.0.0           # AES-256-GCM chiffrement ordonnances + registre stupéfiants
+
+# ─── Serveur / Prod ───────────────────────────────────────────────────────────
+gunicorn==22.0.0
+whitenoise==6.7.0              # fichiers statiques en prod
+sentry-sdk==2.12.0             # monitoring d'erreurs
+
+# ─── Utilitaires ──────────────────────────────────────────────────────────────
+pillow==12.3.0                 # traitement d'images ordonnances
+python-dateutil==2.9.0.post0

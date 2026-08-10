@@ -1,0 +1,45 @@
+{
+  "cookies": [
+    {
+      "name": "pharmapp_refresh",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NjcxMjk3NSwiaWF0IjoxNzg2MTA4MTc1LCJqdGkiOiI4YjczZTI2NDY1YmE0OTU2OTNiN2Y0ZjY3Zjg4NzVlMiIsInVzZXJfaWQiOiJjZGRjYzNjZS1kMDJiLTRkYjMtODgxZC0wNjI2ZmMxNzQxZTQifQ.M2wlMu0R3VyVfHurban_B-i68jo_3TSutA_AqKmxSIU",
+      "domain": "localhost",
+      "path": "/api/auth/",
+      "expires": 1786712975.111492,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "pharmapp_access",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MTA5MDc1LCJpYXQiOjE3ODYxMDgxNzUsImp0aSI6Ijg3Njg1ODNmOGUzNTRlNmJiNWVmYTlmOWI5MjAwMTkzIiwidXNlcl9pZCI6ImNkZGNjM2NlLWQwMmItNGRiMy04ODFkLTA2MjZmYzE3NDFlNCJ9.rByuKyAoGfZqsIPmJh6aMa2b3mvoLiTrj0ef4Q0cWVo",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1786109075.111367,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "pharmapp_csrf",
+      "value": "a0OCdbgSSofB1t1w3Joha2JcGubaBR6V",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1817557775.171578,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "pharmapp.theme",
+          "value": "vert-sante"
+        }
+      ]
+    }
+  ]
+}
