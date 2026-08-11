@@ -269,4 +269,23 @@ describe("traiterFile()", () => {
     const restante = await db.ventes_en_attente.get("acquittee-recente");
     expect(restante).toBeDefined();
   });
+
+  it("génère une clé via le fallback si crypto.randomUUID n'existe pas", () => {
+    const originalCrypto = global.crypto;
+
+    Object.defineProperty(global, "crypto", {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+
+    const key = idempotencyKey();
+    expect(key).toMatch(/^pv-\d+-/);
+
+    Object.defineProperty(global, "crypto", {
+      value: originalCrypto,
+      configurable: true,
+      writable: true,
+    });
+  });
 });

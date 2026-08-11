@@ -126,4 +126,49 @@ describe("useCodeBarreScanner", () => {
 
     expect(removeEventListenerSpy).toHaveBeenCalledWith("keydown", expect.any(Function));
   });
+
+  it("annule le timer de flush au démontage si un scan est en cours", () => {
+    const onScan = vi.fn();
+    const { unmount } = renderHook(() => useCodeBarreScanner({ onScan, actif: true }));
+
+    act(() => {
+      pressKey("A");
+    });
+
+    unmount();
+  });
+
+  it("ne fait rien si Enter est pressé alors que le buffer est vide", () => {
+    const onScan = vi.fn();
+    renderHook(() => useCodeBarreScanner({ onScan, actif: true }));
+
+    act(() => {
+      pressKey("Enter");
+    });
+
+    expect(onScan).not.toHaveBeenCalled();
+  });
+
+  it("ignore les saisies lentes d'un humain après un premier scan", () => {
+    const onScan = vi.fn();
+    renderHook(() => useCodeBarreScanner({ onScan, actif: true }));
+
+    act(() => {
+      simuFastScan("1234");
+    });
+    expect(onScan).toHaveBeenCalledWith("1234");
+    onScan.mockClear();
+
+    // Attendre plus que delaiInterTouche (ex: 200ms)
+    act(() => {
+      vi.advanceTimersByTime(200);
+      pressKey("A");
+    });
+
+    // "A" doit être ignoré, le buffer reste vide
+    act(() => {
+      pressKey("Enter");
+    });
+    expect(onScan).not.toHaveBeenCalled();
+  });
 });

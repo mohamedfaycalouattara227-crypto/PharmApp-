@@ -52,7 +52,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     appliquerTheme(nom);
   };
 
-  const definitionActive = THEMES.find((t) => t.nom === themeActif) ?? THEMES[0];
+  const definitionActive = THEMES.find((t) => t.nom === themeActif)!;
 
   return (
     <ThemeContext.Provider

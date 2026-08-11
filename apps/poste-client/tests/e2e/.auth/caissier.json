@@ -2,30 +2,30 @@
   "cookies": [
     {
       "name": "pharmapp_refresh",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NjcxMjk3MywiaWF0IjoxNzg2MTA4MTczLCJqdGkiOiJjNWI4NGJmZTUwNDc0ZjE3Yjc2YWQzZWYyMzczZGRhOSIsInVzZXJfaWQiOiI5NWNhYzFkZC01ZDIyLTQzMmQtYWRjNi04NzA1NTgyM2YyYmEifQ.1IrydhTIboDbRkUiQx-xORWcTnajjEC0ZKTLrG7Ify0",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NzA1NTIyMiwiaWF0IjoxNzg2NDUwNDIyLCJqdGkiOiI0NDEyZDM0OTQyNGE0YjcwOGMxZTU3ODMzNDFiNWRhMCIsInVzZXJfaWQiOiI5Mzc3MGQzOC0zMjg5LTRhMzAtYjY0ZS02MTJmYTU4YzdjZGYifQ.XdFz9WPFl5GFVAki7p_nw94dQKdQHGm8-ShWY-JWhCk",
       "domain": "localhost",
       "path": "/api/auth/",
-      "expires": 1786712973.484513,
+      "expires": 1787055222.249439,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
     },
     {
       "name": "pharmapp_access",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MTA5MDczLCJpYXQiOjE3ODYxMDgxNzMsImp0aSI6Ijc4NDk1ZjM3NTIxNDRjNjI5OGM3YTYxNWI5Mzc5ZjdlIiwidXNlcl9pZCI6Ijk1Y2FjMWRkLTVkMjItNDMyZC1hZGM2LTg3MDU1ODIzZjJiYSJ9.BXvt_m4LBhM_r9dNrkg6s1E6JVIXr_Q4Kr5gB5_P5Ms",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2NDUxMzIyLCJpYXQiOjE3ODY0NTA0MjIsImp0aSI6IjIzMTlkOWY3NjI2YjQ2YjI5YmFhMTI5OTgzNWRjZWM5IiwidXNlcl9pZCI6IjkzNzcwZDM4LTMyODktNGEzMC1iNjRlLTYxMmZhNThjN2NkZiJ9.gJJJEa4wO0cLX948RLQk8b5mCYxavOmuMlG5UlX8r6U",
       "domain": "localhost",
       "path": "/",
-      "expires": 1786109073.484327,
+      "expires": 1786451322.248586,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
     },
     {
       "name": "pharmapp_csrf",
-      "value": "7PYTJY9382cf7cmOCrxDVV7eq2lWDmql",
+      "value": "vCAY40QXNd8pUE6ByGVzxcDd8e1nTKPU",
       "domain": "localhost",
       "path": "/",
-      "expires": 1817557773.539576,
+      "expires": 1817900022.322502,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Strict"

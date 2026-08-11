@@ -38,7 +38,12 @@ function LigneStat({ libelle, valeur, fort, alerte, unite }: {
 
 export function ScreenCloture() {
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["clotures"], queryFn: () => api.clotures.liste() });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["clotures"],
+    queryFn: () => api.clotures.liste(),
+    retry: false,
+    throwOnError: false,
+  });
 
   const [fondOuverture, setFondOuverture] = useState("0");
   const [fondCloture, setFondCloture]     = useState("0");
@@ -46,8 +51,16 @@ export function ScreenCloture() {
 
   const cloturer = useMutation({
     mutationFn: () => api.clotures.creer({ fond_caisse_ouverture: fondOuverture, fond_caisse_cloture: fondCloture, notes }),
-    onSuccess: () => { toast.success("Caisse clôturée."); void qc.invalidateQueries({ queryKey: ["clotures"] }); setNotes(""); },
-    onError: (e) => toast.error("Clôture refusée", { description: String(e) }),
+    onSuccess: () => {
+      console.log("CLOTURE SUCCESS!");
+      toast.success("Caisse clôturée.");
+      void qc.invalidateQueries({ queryKey: ["clotures"] });
+      setNotes("");
+    },
+    onError: (e) => {
+      console.error("CLOTURE ERROR:", e);
+      toast.error("Clôture refusée", { description: String(e) });
+    },
   });
 
   const derniere = data?.results?.[0];
@@ -75,7 +88,7 @@ export function ScreenCloture() {
               <Label>Notes & justification d'écart</Label>
               <Textarea className="mt-2 min-h-[100px]" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Exemple : différence de −250 FCFA due à un rendu-monnaie non tracé." />
             </div>
-            <Button size="lg" className="w-full bg-primary text-primary-foreground" onClick={() => cloturer.mutate()} disabled={cloturer.isPending}>
+            <Button size="lg" className="w-full bg-primary text-primary-foreground" onClick={() => { console.log("CLOTURER BUTTON CLICKED"); cloturer.mutate(); }} disabled={cloturer.isPending}>
               {cloturer.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ClipboardCheck className="h-4 w-4" />}
               Clôturer la caisse
             </Button>
@@ -86,6 +99,10 @@ export function ScreenCloture() {
           <h2 className="font-display text-2xl">Dernière clôture</h2>
           {isLoading ? (
             <div className="text-sm text-muted-foreground flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Chargement…</div>
+          ) : error ? (
+            <div className="text-sm text-destructive bg-destructive/10 rounded-md p-4">
+              {error instanceof ApiError ? error.detail : "Erreur de chargement."}
+            </div>
           ) : derniere ? (
             <div className="card-elevated p-6 space-y-4">
               <div className="flex items-baseline justify-between">

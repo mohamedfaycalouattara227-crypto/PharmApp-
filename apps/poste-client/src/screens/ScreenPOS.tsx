@@ -33,7 +33,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-import { api, ApiError } from "@/lib/api-client";
+import { api, ApiError, NetworkError } from "@/lib/api-client";
+import { enfilerVente } from "@/lib/offline-queue";
 import { fmtFCFA } from "@/lib/format";
 import type { Medicament, ModePaiement, RecuDTO, Ordonnance, Client } from "@/lib/types";
 import { DialogPaiement } from "@/components/pos/dialog-paiement";
@@ -331,7 +332,13 @@ export function ScreenPOS() {
       setRecuAImprimer(recu);
       setDialogRecuOuvert(true);
     } catch (e) {
-      toast.error(e instanceof ApiError ? e.detail : "Erreur lors de la vente.");
+      if (e instanceof NetworkError) {
+        await enfilerVente(payload);
+        toast.success("Vente mise en attente (hors-ligne). Elle sera synchronisée dès reprise du réseau.");
+        viderPanier();
+      } else {
+        toast.error(e instanceof ApiError ? e.detail : "Erreur lors de la vente.");
+      }
     } finally { setDialogPaiementOuvert(false); }
   }
 

@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { AppShell } from "@/components/app-shell";
 
@@ -105,6 +105,11 @@ export const Route = createFileRoute("/_app")({
       if (r.status === 401 || r.status === 403) {
         throw redirect({ to: "/connexion" });
       }
+      if (r.ok) {
+        const profil = await r.json();
+        sessionStorage.setItem("pharmapp.role", profil.role);
+        sessionStorage.setItem("pharmapp.user_id", profil.id);
+      }
       // Lire le timeout depuis le parametrage et le stocker en session
       try {
         const pResp = await fetch(`${base}/api/parametrage/`, {
@@ -120,7 +125,7 @@ export const Route = createFileRoute("/_app")({
         /* Le parametrage n'est pas critique pour le boot */
       }
     } catch (e) {
-      if (e && typeof e === "object" && "to" in (e as object)) throw e;
+      if (isRedirect(e)) throw e;
     }
   },
   component: AppLayoutWithIdleLogout,

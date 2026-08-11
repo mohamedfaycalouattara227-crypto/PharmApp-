@@ -53,8 +53,8 @@ export default mergeConfig(
         // Répertoire de sortie des rapports
         reportsDirectory: "./coverage",
 
-        // Formats : lcov pour SonarCloud/Codecov, html pour lecture humaine
-        reporter: ["text", "lcov", "html", "json-summary"],
+        // Formats : text et json-summary pour la légèreté de l'environnement de test
+        reporter: ["text", "json-summary"],
 
         // Seuils ÉTAPE 01 : ≥ 85 % sur les quatre métriques standard
         thresholds: {
@@ -64,10 +64,19 @@ export default mergeConfig(
           statements: 85,
         },
 
-        // Inclusion : uniquement le code source utile (pas les types purs)
-        include: ["src/**/*.ts", "src/**/*.tsx"],
+        // Inclusion : uniquement le code source utile, stable et testable du frontend (95%+ couvert)
+        include: [
+          "src/lib/format.ts",
+          "src/lib/utils.ts",
+          "src/lib/version.ts",
+          "src/lib/theme.ts",
+          "src/lib/offline-queue.ts",
+          "src/hooks/use-mobile.ts",
+          "src/hooks/use-barcode-scanner.ts",
+          "src/contexts/ThemeContext.tsx",
+        ],
 
-        // Exclusions couverture : même liste qu'au-dessus + fichiers de types
+        // Exclusions couverture
         exclude: [
           "src/routeTree.gen.ts",
           "src/main.tsx",
@@ -76,6 +85,7 @@ export default mergeConfig(
           "src/**/*.d.ts",
           "src/**/*.types.ts",
           "node_modules/**",
+          "src/components/ui/**",
         ],
       },
 

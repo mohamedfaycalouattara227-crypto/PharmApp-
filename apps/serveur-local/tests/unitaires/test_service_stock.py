@@ -295,6 +295,39 @@ class TestServiceStockInventaire:
                     utilisateur=gestionnaire_stock,
                 )
 
+    def test_enregistrer_comptage_inventaire_introuvable_leve_erreur(
+        self, service, gestionnaire_stock, db
+    ):
+        """Un inventaire introuvable lève une erreur."""
+        with patch("gestion.stocks.services.Inventaire") as mock_inv:
+            mock_inv.objects.filter.return_value.first.return_value = None
+
+            with pytest.raises(ValueError, match="Inventaire introuvable"):
+                service.enregistrer_comptage(
+                    inventaire_id=uuid.uuid4(),
+                    lot_id=uuid.uuid4(),
+                    quantite_comptee=10,
+                    utilisateur=gestionnaire_stock,
+                )
+
+    def test_enregistrer_comptage_statut_invalide_leve_erreur(
+        self, service, gestionnaire_stock, db
+    ):
+        """Un inventaire clos ne peut pas être modifié."""
+        inventaire_mock = MagicMock()
+        inventaire_mock.statut = "cloture"
+
+        with patch("gestion.stocks.services.Inventaire") as mock_inv:
+            mock_inv.objects.filter.return_value.first.return_value = inventaire_mock
+
+            with pytest.raises(ValueError, match="seul 'en_cours' est modifiable"):
+                service.enregistrer_comptage(
+                    inventaire_id=uuid.uuid4(),
+                    lot_id=uuid.uuid4(),
+                    quantite_comptee=10,
+                    utilisateur=gestionnaire_stock,
+                )
+
 
 
 class TestServiceStockPermissions:
@@ -456,38 +489,3 @@ class TestServiceStockPermissions:
             )
 
         assert resultat.quantite_disponible == 48
-
-
-class TestServiceStockInventaire:
-    """Tests de la gestion des inventaires."""
-
-    @pytest.fixture
-    def service(self):
-        return ServiceStock()
-
-    def test_demarrer_inventaire_requiert_gestionnaire_stock(
-        self, service, caissier
-    ):
-        """Seul un gestionnaire de stock peut démarrer un inventaire."""
-        from gestion.exceptions import PermissionRefusee
-
-        with pytest.raises(PermissionRefusee):
-            service.demarrer_inventaire(utilisateur=caissier)
-
-    def test_enregistrer_comptage_quantite_negative_leve_erreur(
-        self, service, gestionnaire_stock, db
-    ):
-        """Une quantité comptée négative est invalide."""
-        inventaire_mock = MagicMock()
-        inventaire_mock.statut = "en_cours"
-
-        with patch("gestion.stocks.services.Inventaire") as mock_inv:
-            mock_inv.objects.filter.return_value.first.return_value = inventaire_mock
-
-            with pytest.raises(ValueError):
-                service.enregistrer_comptage(
-                    inventaire_id=uuid.uuid4(),
-                    lot_id=uuid.uuid4(),
-                    quantite_comptee=-1,
-                    utilisateur=gestionnaire_stock,
-                )

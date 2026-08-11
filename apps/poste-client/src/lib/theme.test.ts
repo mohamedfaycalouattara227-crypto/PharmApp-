@@ -55,6 +55,45 @@ describe("THEMES", () => {
   });
 });
 
+describe("scénarios d'erreur et fallbacks d'environnements", () => {
+  it("gère l'absence de window/document de manière robuste", () => {
+    const win = global.window;
+    const doc = global.document;
+
+    // @ts-ignore
+    delete global.window;
+    // @ts-ignore
+    delete global.document;
+
+    expect(lireThemeSauvegarde()).toBe(THEME_PAR_DEFAUT);
+    expect(() => sauvegarderTheme("sombre-moderne")).not.toThrow();
+    expect(() => appliquerTheme("sombre-moderne")).not.toThrow();
+
+    // @ts-ignore
+    global.window = win;
+    // @ts-ignore
+    global.document = doc;
+  });
+
+  it("gère les erreurs de localStorage de manière robuste", () => {
+    const originalGetItem = localStorage.getItem;
+    const originalSetItem = localStorage.setItem;
+
+    localStorage.getItem = () => {
+      throw new Error("sécurité restreinte");
+    };
+    localStorage.setItem = () => {
+      throw new Error("sécurité restreinte");
+    };
+
+    expect(lireThemeSauvegarde()).toBe(THEME_PAR_DEFAUT);
+    expect(() => sauvegarderTheme("sombre-moderne")).not.toThrow();
+
+    localStorage.getItem = originalGetItem;
+    localStorage.setItem = originalSetItem;
+  });
+});
+
 describe("THEME_PAR_DEFAUT", () => {
   it("doit être vert-sante", () => {
     expect(THEME_PAR_DEFAUT).toBe("vert-sante");

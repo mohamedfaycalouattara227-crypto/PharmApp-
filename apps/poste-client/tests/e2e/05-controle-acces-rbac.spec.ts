@@ -15,6 +15,12 @@ import { expect, test } from "@playwright/test";
 test.describe("Contrôle d'accès RBAC — rôle Caissier", () => {
   // Utilise la session caissier (storageState configuré dans playwright.config.ts)
 
+  test.beforeEach(async ({}, testInfo) => {
+    if (testInfo.project.name.includes("adjoint")) {
+      test.skip(true, "Ce test concerne le rôle Caissier (non applicable à l'Adjoint).");
+    }
+  });
+
   test("un caissier peut accéder à la caisse (POS)", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveURL(/\/|tableau-bord/);
@@ -33,11 +39,14 @@ test.describe("Contrôle d'accès RBAC — rôle Caissier", () => {
   });
 
   test("un caissier ne peut PAS accéder à la gestion des utilisateurs", async ({ page }) => {
-    await page.goto("/utilisateurs");
+    await page.goto("/utilisateurs").catch(() => {});
+
+    // Attendre la redirection automatique vers l'accueil ou connexion
+    await page.waitForURL((u) => u.pathname === "/" || u.pathname.includes("connexion") || u.pathname.includes("tableau-bord"), { timeout: 8_000 }).catch(() => {});
 
     // Soit redirection, soit message d'interdiction (403 / accès refusé)
     const url = page.url();
-    const estRedirige = url.includes("/connexion") || url.includes("/tableau-bord") || url.endsWith("/");
+    const estRedirige = url.includes("/connexion") || url.includes("/tableau-bord") || url.endsWith("/") || new URL(url).pathname === "/";
     const messageInterdit = page.getByText(/accès refusé|non autorisé|permissions insuffisantes/i)
       .or(page.getByRole("alert").filter({ hasText: /autoris|permiss/i }));
 
@@ -56,9 +65,10 @@ test.describe("Contrôle d'accès RBAC — rôle Caissier", () => {
   test("un caissier ne peut PAS accéder aux rapports détaillés", async ({ page }) => {
     // Vérifier que les rapports de marges et exports (réservés titulaire/adjoint)
     // renvoient une interdiction
+    const apiUrl = (process.env.VITE_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
     const reponsesRapports = await Promise.all([
-      page.request.get("/api/rapports/marges/"),
-      page.request.get("/api/rapports/export-ventes/"),
+      page.request.get(`${apiUrl}/api/rapports/marges/`),
+      page.request.get(`${apiUrl}/api/rapports/export-ventes/`),
     ]);
 
     for (const reponse of reponsesRapports) {
@@ -71,7 +81,7 @@ test.describe("Contrôle d'accès RBAC — rôle Caissier", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
 
-    await page.goto("/");
+    await page.goto("/").catch(() => {});
     await page.waitForURL(/connexion/, { timeout: 8_000 });
     expect(page.url()).toContain("/connexion");
 

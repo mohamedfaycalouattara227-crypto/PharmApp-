@@ -75,12 +75,12 @@ test.describe("Authentification PharmApp", () => {
     await expect(
       page.getByText(/accès sécurisé/i)
         .or(page.getByLabel(/adresse e-mail/i))
-        .or(page.getByRole("heading", { name: /point de vente|tableau de bord/i }))
+        .or(page.getByRole("heading", { name: /point de vente|tableau de bord/i })).first()
     ).toBeVisible();
   });
 
   test("accès direct à /tableau-bord sans session redirige vers /connexion", async ({ page }) => {
-    await page.goto("/tableau-bord");
+    await page.goto("/tableau-bord").catch(() => {});
     await page.waitForURL(/connexion/, { timeout: 8_000 });
     expect(page.url()).toContain("/connexion");
   });
