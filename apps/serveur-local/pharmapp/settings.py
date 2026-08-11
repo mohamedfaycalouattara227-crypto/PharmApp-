@@ -222,7 +222,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "anon": "60/min",
         "user": "200/min",
-        "connexion": "5/min",
+        "connexion": "5/min" if not DEBUG else "200/min",
         "vente": "60/min",
         "ajustement_stock": "30/min",
         "rapport": "10/min",

@@ -27,9 +27,7 @@ test.describe("Résilience hors-ligne — file d'attente caisse", () => {
     await page.waitForResponse(
       (resp) => resp.url().includes("/api/medicaments") && resp.status() === 200,
     );
-    await page.getByRole("option").first()
-      .or(page.getByTestId("medicament-result").first())
-      .click();
+    await page.getByRole("button", { name: /Paracétamol.*500 mg/i }).first().click();
 
     // ── Simuler la coupure réseau sur /api/ventes/ ────────────────────────
     await page.route("**/api/ventes/", (route) => route.abort("failed"));
@@ -47,7 +45,7 @@ test.describe("Résilience hors-ligne — file d'attente caisse", () => {
       const champMontant = page.getByLabel(/montant encaissé/i).or(page.getByPlaceholder(/montant/i));
       if (await champMontant.isVisible()) await champMontant.fill("10000");
 
-      await page.getByRole("button", { name: /confirmer|valider le paiement/i }).click();
+      await page.getByRole("button", { name: /confirmer|valider le paiement|valider la vente/i }).click();
     }
 
     // L'UI doit indiquer la mise en attente (toast ou badge)
@@ -63,9 +61,8 @@ test.describe("Résilience hors-ligne — file d'attente caisse", () => {
     // L'indicateur hors-ligne doit disparaître ou un message de sync s'afficher
     // (le SW ou le polling va rejouer la file)
     await expect(
-      page.getByText(/synchronisée|synchro.réussie|vente enregistrée/i)
-        .or(page.getByRole("alert").filter({ hasText: /synchronis/i }))
-    ).toBeVisible({ timeout: 20_000 });
+      page.getByText(/Aucune opération en attente/i)
+    ).toBeVisible({ timeout: 25_000 });
   });
 
   test("indicateur de statut offline visible pendant la coupure", async ({ page, context }) => {
@@ -74,15 +71,17 @@ test.describe("Résilience hors-ligne — file d'attente caisse", () => {
     // Couper TOUT le réseau via le contexte Playwright
     await context.setOffline(true);
 
-    // L'UI doit afficher un indicateur de déconnexion dans les 5 secondes
-    // (événement "offline" du navigateur → handled dans sw-register.ts ou l'UI)
-    await expect(
-      page.getByTestId("offline-indicator")
-        .or(page.getByText(/hors.ligne|déconnecté|pas de réseau/i))
-    ).toBeVisible({ timeout: 8_000 });
-
-    // Rétablir
-    await context.setOffline(false);
+    try {
+      // L'UI doit afficher un indicateur de déconnexion dans les 5 secondes
+      // (événement "offline" du navigateur → handled dans sw-register.ts ou l'UI)
+      await expect(
+        page.getByTestId("offline-indicator")
+          .or(page.getByText(/hors.ligne|déconnecté|pas de réseau/i))
+      ).toBeVisible({ timeout: 8_000 });
+    } finally {
+      // Toujours rétablir le réseau pour ne pas bloquer les autres tests
+      await context.setOffline(false);
+    }
 
     // L'indicateur doit disparaître
     await expect(

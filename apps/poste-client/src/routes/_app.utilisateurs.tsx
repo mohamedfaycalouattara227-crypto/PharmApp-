@@ -11,7 +11,7 @@
  * Accès : titulaire & administrateur uniquement (§4.1 CDC).
  */
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UserCog, Plus, Pencil, Lock, Unlock, UserX, UserCheck, X, Shield } from "lucide-react";
@@ -21,6 +21,13 @@ import { fmtDate, LIBELLES_ROLE } from "@/lib/format";
 import type { Utilisateur, RoleUtilisateur } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/utilisateurs")({
+  beforeLoad: () => {
+    if (typeof window === "undefined") return;
+    const role = window.sessionStorage.getItem("pharmapp.role") || "";
+    if (role !== "titulaire" && role !== "administrateur") {
+      throw redirect({ to: "/" });
+    }
+  },
   component: UtilisateursPage,
 });
 
@@ -131,12 +138,26 @@ function UtilisateursPage() {
   const [search, setSearch] = useState("");
   const [dialog, setDialog] = useState<{ open: boolean; item?: Utilisateur | null }>({ open: false });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["utilisateurs", search],
     queryFn: () => api.utilisateurs.liste({ ...(search ? { search } : {}) }),
     staleTime: 30_000,
+    retry: false,
+    throwOnError: false,
   });
   const utilisateurs = data?.results ?? [];
+
+  if (error) {
+    const detail = error instanceof ApiError ? error.detail : String(error);
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-4 p-6 text-center">
+        <Shield className="h-16 w-16 text-destructive animate-pulse" />
+        <h1 className="text-2xl font-display font-bold text-destructive">Accès refusé</h1>
+        <p className="text-muted-foreground max-w-md">{detail || "Vous n'avez pas l'autorisation d'accéder à cette page."}</p>
+        <button onClick={() => window.history.back()} className="btn btn-outline mt-2">Retour</button>
+      </div>
+    );
+  }
 
   const creer = useMutation({
     mutationFn: (d: unknown) => api.utilisateurs.creer(d),

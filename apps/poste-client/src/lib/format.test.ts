@@ -114,6 +114,14 @@ describe("fmtDateCourte", () => {
     expect(res).toContain("04");
     expect(res).toContain("2024");
   });
+
+  it("formate correctement un objet Date", () => {
+    const d = new Date("2024-04-10T12:00:00");
+    const res = fmtDateCourte(d);
+    expect(res).toContain("2024");
+    expect(res).toContain("04");
+    expect(res).toContain("10");
+  });
 });
 
 describe("LIBELLES_MODE_PAIEMENT", () => {

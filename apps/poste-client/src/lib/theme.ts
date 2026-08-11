@@ -86,7 +86,7 @@ export const THEMES: DefinitionTheme[] = [
     classeHtml: "theme-minimaliste-blanc light",
     couleurPrimaire: "oklch(0.500 0.180 260)",
     couleurSecondaire: "oklch(0.600 0.140 250)",
-    animation: "fadeIn",
+    animation: "aucune",
   },
 ];
 

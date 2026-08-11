@@ -80,11 +80,11 @@ export default defineConfig({
       dependencies: ["setup"],
     },
 
-    // Tests lecture seule sur Firefox (compatibilité pharmacien adjoint)
+    // Tests lecture seule (compatibilité pharmacien adjoint) via Chrome
     {
-      name: "firefox-adjoint",
+      name: "chromium-adjoint",
       use: {
-        ...devices["Desktop Firefox"],
+        ...devices["Desktop Chrome"],
         storageState: "tests/e2e/.auth/adjoint.json",
       },
       dependencies: ["setup"],

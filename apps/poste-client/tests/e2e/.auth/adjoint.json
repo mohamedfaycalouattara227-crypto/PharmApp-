@@ -2,30 +2,30 @@
   "cookies": [
     {
       "name": "pharmapp_refresh",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NjcxMjk3NSwiaWF0IjoxNzg2MTA4MTc1LCJqdGkiOiI4YjczZTI2NDY1YmE0OTU2OTNiN2Y0ZjY3Zjg4NzVlMiIsInVzZXJfaWQiOiJjZGRjYzNjZS1kMDJiLTRkYjMtODgxZC0wNjI2ZmMxNzQxZTQifQ.M2wlMu0R3VyVfHurban_B-i68jo_3TSutA_AqKmxSIU",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NzA1NTIyOCwiaWF0IjoxNzg2NDUwNDI4LCJqdGkiOiI1NGU0MjRlODY2Nzg0MzBkODFiZDVmZGNiMDU2NzM4OSIsInVzZXJfaWQiOiJjZDU1YjAwNC05OTBlLTQ3NzUtYTAwNS01MjkzMTFiYzU5N2QifQ.tefeIDkPfi0OeXpaaoshPPA41J1JEqxLtUzyo_fNrlQ",
       "domain": "localhost",
       "path": "/api/auth/",
-      "expires": 1786712975.111492,
+      "expires": 1787055228.778815,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
     },
     {
       "name": "pharmapp_access",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MTA5MDc1LCJpYXQiOjE3ODYxMDgxNzUsImp0aSI6Ijg3Njg1ODNmOGUzNTRlNmJiNWVmYTlmOWI5MjAwMTkzIiwidXNlcl9pZCI6ImNkZGNjM2NlLWQwMmItNGRiMy04ODFkLTA2MjZmYzE3NDFlNCJ9.rByuKyAoGfZqsIPmJh6aMa2b3mvoLiTrj0ef4Q0cWVo",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2NDUxMzI4LCJpYXQiOjE3ODY0NTA0MjgsImp0aSI6ImIxNzk4MjM0YjQ5NjRjY2U4N2IzNGUzZGNhZTcwNTExIiwidXNlcl9pZCI6ImNkNTViMDA0LTk5MGUtNDc3NS1hMDA1LTUyOTMxMWJjNTk3ZCJ9.3EQSpMnQwEOyCU29RnKy8JiwB6FKFWQjBWzVaPQ0RAg",
       "domain": "localhost",
       "path": "/",
-      "expires": 1786109075.111367,
+      "expires": 1786451328.778719,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
     },
     {
       "name": "pharmapp_csrf",
-      "value": "a0OCdbgSSofB1t1w3Joha2JcGubaBR6V",
+      "value": "wajGNdFJ4JwSEODVDim7qwLaiT7MIede",
       "domain": "localhost",
       "path": "/",
-      "expires": 1817557775.171578,
+      "expires": 1817900028.83839,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Strict"
